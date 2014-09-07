@@ -10,16 +10,17 @@ The client (sending) end of a tool for publishing files from 1 computer to anoth
 * Server available here: [nathantreid/pubsync-server]
 
 
-Installation
+Installation on Windows (untested on other OS's)
 ---
 ```sh
 npm install pubsync-client
+robocopy /e /move node_modules\pubsync-client .
 ```
 
 Usage
 ---
 ```sh
-node dist/pubsync-client.js path/to/config.json
+node pubsync-client.js path/to/config.json
 ```
 
 Configuration
