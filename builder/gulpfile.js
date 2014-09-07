@@ -22,7 +22,7 @@ gulp.task('copy_modules', ['clean'], function () {
 });
 
 gulp.task('copy_package', ['clean'], function () {
-    gulp.src(srcPath + '/package.json')
+    gulp.src(srcPath + '/*.json')
         .pipe(gulp.dest(destPath + '/'));
 });
 
@@ -32,7 +32,6 @@ gulp.task('compile', ['clean'], function (cb) {
         name: "main",
         out: destPath + "/pubsync-client.js",
         mainConfigFile: srcPath + '/app/main.js',
-        fileExclusionRegExp: /(^\.)|(node_modules)/,
         paths: {
             'when': 'empty:',
             'fs': 'empty:',
@@ -44,7 +43,9 @@ gulp.task('compile', ['clean'], function (cb) {
             'util': 'empty:',
             'crypto': 'empty:',
             'zlib': 'empty:',
-            'uuid-lib': 'empty:'
+            'uuid-lib': 'empty:',
+            'request': 'empty:',
+            'http': 'empty:'
         },
         wrap: {
             start: '(function() {'

@@ -18,14 +18,16 @@ requirejs.config({
     }
 });
 
-var CompositionRoot = requirejs('composition-root');
+requirejs(['composition-root'], function(CompositionRoot) {
+    var compositionRoot = new CompositionRoot();
+    when(compositionRoot.injector.resolve('Publisher'))
+        .then(function (publisher) {
+            return publisher.publish();
+        })
+        .then(function (result) {
+            if (!result.wasSuccessful)
+                process.exit(1);
+        });
 
-var compositionRoot = new CompositionRoot();
-when(compositionRoot.injector.resolve('Publisher'))
-    .then(function (publisher) {
-        return publisher.publish();
-    })
-    .then(function (result) {
-        if (!result.wasSuccessful)
-            process.exit(1);
-    });
+});
+

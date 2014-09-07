@@ -1,0 +1,32 @@
+{
+  "name": "pubsync-client",
+  "version": "0.1.1",
+  "description": "pubsync client app for publishing files to other computers",
+  "main": "pubsync-client.js",
+  "dependencies": {
+    "requirejs": "~2.1.14",
+    "request": "~2.37.0",
+    "when": "~3.3.1",
+    "stringformat": "~0.0.5",
+    "uuid-lib": "~0.0.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathantreid/pubsync-client"
+  },
+  "keywords": [
+    "publish",
+    "sync",
+    "file"
+  ],
+  "author": "Nathan Reid <code@nathantreid.com> (http://nathantreid.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nathantreid/pubsync-client/issues"
+  },
+  "homepage": "https://github.com/nathantreid/pubsync-client"
+}

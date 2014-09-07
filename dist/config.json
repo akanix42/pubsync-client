@@ -1,0 +1,19 @@
+{
+    "filters": [
+        {
+            "expression": "node_modules/$",
+            "type": "exclude"
+        },
+        {
+            "expression": "\\.idea/$",
+            "type": "exclude"
+        }
+    ],
+    "sourcePath": ".",
+    "destination": {
+        "protocol": "http",
+        "host": "localhost",
+        "port": 3000,
+        "path": "C:\\temp\\sync"
+    }
+}

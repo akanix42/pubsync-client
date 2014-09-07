@@ -1,6 +1,6 @@
 define(function (require) {
         var when = require('when'),
-            walk = require('./lib/when-walk/when-walk-ex.js'),
+            walk = require('when-walk'),
             fs = require('fs'),
             path = require('path'),
             util = require('util');
@@ -23,11 +23,6 @@ define(function (require) {
                     .then(getFiles)
                     .then(transferFiles)
                     .then(publishFiles)
-                    //                .catch(function (err) {
-                    //                    debugger;
-                    //                    console.log('Error encountered; processing aborted.');
-                    //                    debug.log(err);
-                    //                })
                     .then(function (result) {
                         if (result.wasSuccessful)
                             console.log('publishing complete.');
