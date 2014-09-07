@@ -1,6 +1,6 @@
 define(function (require) {
-    var extend = require('lib/extend/extend'),
-        truthy = require('lib/truthy-falsy/truthy'),
+    var extend = require('extend'),
+        truthy = require('truthy'),
         when = require('when');
     return Injector;
 

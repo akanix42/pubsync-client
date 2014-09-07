@@ -1,12 +1,11 @@
 define(function (require) {
-    var Injector = require('./lib/injector/injector'),
-        FileFactory = require('./FileFactory'),
-        Requester = require('./Requester'),
-        Sender = require('./sender'),
-        Publisher = require('./Publisher'),
-        InMemConfig = require('./InMemConfig'),
+    var Injector = require('injector'),
+        FileFactory = require('file-factory'),
+        Requester = require('requester'),
+        Sender = require('sender'),
+        Publisher = require('publisher'),
         OnDiskConfigFactory = require('config/on-disk-config-factory'),
-        DebugLogger = require('./DebugLogger');
+        DebugLogger = require('debug-logger');
 
     return CompositionRoot;
 

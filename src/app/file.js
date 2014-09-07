@@ -2,7 +2,7 @@ define(function (require) {
     var util = require('util'),
         when = require('when'),
         fs = require('fs'),
-        fileHasher = require('./fileHasher')
+        fileHasher = require('file-hasher')
         ;
 
     return File;
