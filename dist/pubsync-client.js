@@ -484,22 +484,8 @@ define('requester',['require','when','request','./extend'],function (require) {
                 })
         }
 
-        function getRequestOptions() {
-            return {
-                protocol: 'http',
-                host: 'localhost',
-                //    path: '/sessions/1/files/main.js',
-                path: '/sessions/1/files/main.js',
-                //    path: '/upload/main.js',
-                port: 3000,
-                timeout: 120000,
-                method: 'POST',
-                headers: {
-                    'Content-Encoding': 'gzip',
-                    //'Content-Type': 'application/x-www-form-urlencoded',
-                    //    'Content-Length': post_data.length
-                }
-            };
+        function getRequestOptions(uri) {
+            return extend({urlPath: uri}, config.destination);
         }
 
         function post(uri, data) {
@@ -932,6 +918,7 @@ define('composition-root',['require','injector','file-factory','requester','send
     }
 });
 var stringFormat = require('stringformat'),
+    util = require('util'),
     when = require('when');
 
 var requirejs;
@@ -951,6 +938,11 @@ requirejs.config({
     }
 });
 
+process.on('uncaughtException', function(err) {
+    console.error(util.inspect(err));
+    process.exit(1);
+});
+
 requirejs(['composition-root'], function(CompositionRoot) {
     var compositionRoot = new CompositionRoot();
     when(compositionRoot.injector.resolve('Publisher'))
@@ -960,6 +952,9 @@ requirejs(['composition-root'], function(CompositionRoot) {
         .then(function (result) {
             if (!result.wasSuccessful)
                 process.exit(1);
+        }).catch(function(err){
+            console.error(util.inspect(err));
+            process.exit(1);
         });
 
 });

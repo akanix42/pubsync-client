@@ -1,6 +1,6 @@
 {
   "name": "pubsync-client",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "pubsync client app for publishing files to other computers",
   "main": "pubsync-client.js",
   "dependencies": {
