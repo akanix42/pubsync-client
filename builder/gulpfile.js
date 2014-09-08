@@ -10,7 +10,7 @@ gulp.task('default', ['compile', 'copy_modules', 'copy_package'], function () {
 });
 
 gulp.task('clean', function () {
-    return gulp.src(destPath, {
+    return gulp.src(destPath + '/*', {
         read: false
     })
         .pipe(clean({force: true}));
