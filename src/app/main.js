@@ -1,4 +1,5 @@
 var stringFormat = require('stringformat'),
+    util = require('util'),
     when = require('when');
 
 var requirejs;
@@ -18,6 +19,11 @@ requirejs.config({
     }
 });
 
+process.on('uncaughtException', function(err) {
+    console.error(util.inspect(err));
+    process.exit(1);
+});
+
 requirejs(['composition-root'], function(CompositionRoot) {
     var compositionRoot = new CompositionRoot();
     when(compositionRoot.injector.resolve('Publisher'))
@@ -27,6 +33,9 @@ requirejs(['composition-root'], function(CompositionRoot) {
         .then(function (result) {
             if (!result.wasSuccessful)
                 process.exit(1);
+        }).catch(function(err){
+            console.error(util.inspect(err));
+            process.exit(1);
         });
 
 });
