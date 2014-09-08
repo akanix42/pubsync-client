@@ -41,22 +41,8 @@ define(function (require) {
                 })
         }
 
-        function getRequestOptions() {
-            return {
-                protocol: 'http',
-                host: 'localhost',
-                //    path: '/sessions/1/files/main.js',
-                path: '/sessions/1/files/main.js',
-                //    path: '/upload/main.js',
-                port: 3000,
-                timeout: 120000,
-                method: 'POST',
-                headers: {
-                    'Content-Encoding': 'gzip',
-                    //'Content-Type': 'application/x-www-form-urlencoded',
-                    //    'Content-Length': post_data.length
-                }
-            };
+        function getRequestOptions(uri) {
+            return extend({urlPath: uri}, config.destination);
         }
 
         function post(uri, data) {
