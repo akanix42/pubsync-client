@@ -19,7 +19,8 @@ define(function (require) {
                     return;
                 if (stat.isFile())
                     return results.push(name);
-                if (includeDir) results.push(file);
+
+                if (includeDir) results.push(name);
 
                 return walk({directory: file, includeDirectories: includeDir, filterCallback: filterCallback}).then(function (filesInDir) {
                     results = results.concat(filesInDir);

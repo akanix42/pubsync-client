@@ -24,6 +24,8 @@ define(function (require) {
             if (stats.stats.isFile())
                 return when(diffFile(stats))
                     .then(sendFileIfDifferent);
+            else
+                return when(sendDirectory());
         }
 
         function getFileStats() {
@@ -70,7 +72,7 @@ define(function (require) {
         }
 
         function sendFileIfDifferent(diffResult) {
-//            debug.log('send if different');
+            //            debug.log('send if different');
             if (diffResult.error)
                 console.log(diffResult.error);
             else if (diffResult.isDifferent)
@@ -78,9 +80,17 @@ define(function (require) {
         }
 
         function sendFile() {
-//            console.log('sending file');
+            //            console.log('sending file');
             return sender.sendFile(self, self.stats);
         }
 
+        function sendDirectory() {
+            var uri = '/sessions/{sessionId}/directories'.format({
+                    sessionId: self.sessionId
+                }
+            );
+            return when(requester.postJson(uri, {path: relativePath}));
+
+        }
     }
 });

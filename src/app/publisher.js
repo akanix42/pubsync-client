@@ -100,15 +100,13 @@ define(function (require) {
                             }
                         }
                         config.debugLogger.log(util.inspect(result));
-                        //                        if (!result.wasSuccessful)
-                        //                            throw 'Publishing failed';
                         return {error: result.error, wasSuccessful: result.wasSuccessful };
                     });
             }
 
             function makeFilesRelative(files) {
                 for (var i = 0; i < files.length; i++)
-                    files[i] = path.relative(config.sourcePath, files[i]);
+                    files[i] = path.relative(config.sourcePath, files[i]) + (files[i].match(/\/$/) ? '/' : '');
                 return files;
             }
         };

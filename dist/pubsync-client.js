@@ -347,6 +347,8 @@ define('File',['require','util','when','fs','file-hasher'],function (require) {
             if (stats.stats.isFile())
                 return when(diffFile(stats))
                     .then(sendFileIfDifferent);
+            else
+                return when(sendDirectory());
         }
 
         function getFileStats() {
@@ -393,7 +395,7 @@ define('File',['require','util','when','fs','file-hasher'],function (require) {
         }
 
         function sendFileIfDifferent(diffResult) {
-//            debug.log('send if different');
+            //            debug.log('send if different');
             if (diffResult.error)
                 console.log(diffResult.error);
             else if (diffResult.isDifferent)
@@ -401,10 +403,18 @@ define('File',['require','util','when','fs','file-hasher'],function (require) {
         }
 
         function sendFile() {
-//            console.log('sending file');
+            //            console.log('sending file');
             return sender.sendFile(self, self.stats);
         }
 
+        function sendDirectory() {
+            var uri = '/sessions/{sessionId}/directories'.format({
+                    sessionId: self.sessionId
+                }
+            );
+            return when(requester.postJson(uri, {path: relativePath}));
+
+        }
     }
 });
 define('file-factory',['require','util','when','fs','path','./File'],function (require) {
@@ -616,7 +626,8 @@ define('when-walk',['require','fs','path','when','when/node/function'],function 
                     return;
                 if (stat.isFile())
                     return results.push(name);
-                if (includeDir) results.push(file);
+
+                if (includeDir) results.push(name);
 
                 return walk({directory: file, includeDirectories: includeDir, filterCallback: filterCallback}).then(function (filesInDir) {
                     results = results.concat(filesInDir);
@@ -729,15 +740,13 @@ define('publisher',['require','when','when-walk','fs','path','util'],function (r
                             }
                         }
                         config.debugLogger.log(util.inspect(result));
-                        //                        if (!result.wasSuccessful)
-                        //                            throw 'Publishing failed';
                         return {error: result.error, wasSuccessful: result.wasSuccessful };
                     });
             }
 
             function makeFilesRelative(files) {
                 for (var i = 0; i < files.length; i++)
-                    files[i] = path.relative(config.sourcePath, files[i]);
+                    files[i] = path.relative(config.sourcePath, files[i]) + (files[i].match(/\/$/) ? '/' : '');
                 return files;
             }
         };
