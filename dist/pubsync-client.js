@@ -332,6 +332,7 @@ define('File',['require','util','when','fs','file-hasher'],function (require) {
 
     function File(filePath, relativePath, requester, sender, debug) {
         var self = this;
+
         self.transfer = transfer;
         self.filePath = filePath;
         self.relativePath = relativePath;
@@ -339,8 +340,7 @@ define('File',['require','util','when','fs','file-hasher'],function (require) {
         function transfer(sessionId) {
             self.sessionId = sessionId;
             return when(getFileStats())
-                .then(diffAndSend)
-            //.then(sendFileIfDifferent);
+                .then(diffAndSend);
         }
 
         function diffAndSend(stats) {
@@ -400,14 +400,20 @@ define('File',['require','util','when','fs','file-hasher'],function (require) {
                 console.log(diffResult.error);
             else if (diffResult.isDifferent)
                 return sendFile();
+            else
+                debug.log('skipping '+ relativePath);
+
         }
 
         function sendFile() {
+            debug.log('uploading '+ relativePath);
+
             //            console.log('sending file');
             return sender.sendFile(self, self.stats);
         }
 
         function sendDirectory() {
+            debug.log('uploading '+ relativePath);
             var uri = '/sessions/{sessionId}/directories'.format({
                     sessionId: self.sessionId
                 }
