@@ -78,19 +78,21 @@ define(function (require) {
             else if (diffResult.isDifferent)
                 return sendFile();
             else
-                debug.log('skipping '+ relativePath);
+            {
+                debug.spin();
+                debug.debug('skipping '+ relativePath);
+            }
 
         }
 
         function sendFile() {
             debug.log('uploading '+ relativePath);
 
-            //            console.log('sending file');
             return sender.sendFile(self, self.stats);
         }
 
         function sendDirectory() {
-            debug.log('uploading '+ relativePath);
+            debug.debug('uploading '+ relativePath);
             var uri = '/sessions/{sessionId}/directories'.format({
                     sessionId: self.sessionId
                 }

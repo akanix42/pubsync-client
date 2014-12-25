@@ -401,19 +401,21 @@ define('File',['require','util','when','fs','file-hasher'],function (require) {
             else if (diffResult.isDifferent)
                 return sendFile();
             else
-                debug.log('skipping '+ relativePath);
+            {
+                debug.spin();
+                debug.debug('skipping '+ relativePath);
+            }
 
         }
 
         function sendFile() {
             debug.log('uploading '+ relativePath);
 
-            //            console.log('sending file');
             return sender.sendFile(self, self.stats);
         }
 
         function sendDirectory() {
-            debug.log('uploading '+ relativePath);
+            debug.debug('uploading '+ relativePath);
             var uri = '/sessions/{sessionId}/directories'.format({
                     sessionId: self.sessionId
                 }
@@ -686,6 +688,9 @@ define('publisher',['require','when','when-walk','fs','path','util'],function (r
             }
 
             function allowsFile(file, stat) {
+                file = path.relative(config.sourcePath, file).replace(/\\/g, '/');
+                if (stat.isDirectory())
+                    file += '/';
                 for (var i = 0; i < config.filters.length; i++)
                     if (!config.filters[i].allowsFile(file))
                         return false;
@@ -720,7 +725,7 @@ define('publisher',['require','when','when-walk','fs','path','util'],function (r
 
             function publishFiles(files) {
                 config.debugLogger.log('publishing files...');
-                var uri = '/sessions/{sessionId}/publish'.format({ sessionId: config.sessionId});
+                var uri = '/sessions/{sessionId}/publish'.format({sessionId: config.sessionId});
                 return when(requester.postJson(uri, makeFilesRelative(files)))
                     .then(function (response) {
                         var result = response.data;
@@ -732,7 +737,7 @@ define('publisher',['require','when','when-walk','fs','path','util'],function (r
                             }
                         }
                         config.debugLogger.log(util.inspect(result));
-                        return {error: result.error, wasSuccessful: result.wasSuccessful };
+                        return {error: result.error, wasSuccessful: result.wasSuccessful};
                     });
             }
 
@@ -754,17 +759,22 @@ define('filter',['require','path'],function (require) {
 
     function Filter(options) {
         var self = this;
-        var regex = new RegExp(options.expression.replace(/\\\\/g, '/'));
-
+        var regex = new RegExp(options.expression.replace(/\\\\/g, '/'), options.modifiers || 'i');
+        var filterRegex = 'filter' in options ? new RegExp(options.filter.replace(/\\\\/g, '/'), options.modifiers || 'i') : false;
         self.allowsFile = allowsFile;
         self.excludesFile = excludesFile;
 
         function allowsFile(file, stat) {
-            var fileMatches = file.match(regex);
-            return options.type === 'include'
-                ? fileMatches : !fileMatches;
+            if (filterRegex && file.match(filterRegex))
+                return adjustResult(false);
+
+            return adjustResult(file.match(regex));
         }
 
+        function adjustResult(fileMatches) {
+            return options.type === 'include'
+                ? fileMatches : !fileMatches
+        }
 
         function excludesFile(file, stat) {
             var fileMatches = file.match(regex);
@@ -885,16 +895,32 @@ define('config/on-disk-config-factory',['require','fs','when','config/config'],f
 define('debug-logger',['require','helpers/is-object','util'],function (require) {
     var isObject = require('helpers/is-object'),
         util = require('util');
+
+    var chars = ['/', '-', '\\', '|'];
+    var nextChar = 0;
+
+
     return DebugLogger;
 
     function DebugLogger() {
+
         this.isEnabled = false;
         this.log = function () {
-//            console.log('isObject: {isObject}'.format({isObject: isObject(arguments[0])}));
-//            console.log('object: {obj}'.format({obj: JSON.stringify(arguments[0])}));
+            //            console.log('isObject: {isObject}'.format({isObject: isObject(arguments[0])}));
+            //            console.log('object: {obj}'.format({obj: JSON.stringify(arguments[0])}));
             if (isObject(arguments[0]))
                 arguments[0] = JSON.stringify(arguments[0]);
             console.log.apply(this, arguments);
+        };
+        this.debug = function () {
+            if (isObject(arguments[0]))
+                arguments[0] = JSON.stringify(arguments[0]);
+            console.debug.apply(this, arguments);
+        };
+        this.spin = function () {
+            process.stdout.cursorTo(0);
+            process.stdout.write(chars[nextChar++]);
+            if (nextChar >= chars.length) nextChar = 0;
         };
     }
 });

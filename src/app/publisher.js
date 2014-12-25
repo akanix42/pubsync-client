@@ -54,6 +54,9 @@ define(function (require) {
             }
 
             function allowsFile(file, stat) {
+                file = path.relative(config.sourcePath, file).replace(/\\/g, '/');
+                if (stat.isDirectory())
+                    file += '/';
                 for (var i = 0; i < config.filters.length; i++)
                     if (!config.filters[i].allowsFile(file))
                         return false;
@@ -88,7 +91,7 @@ define(function (require) {
 
             function publishFiles(files) {
                 config.debugLogger.log('publishing files...');
-                var uri = '/sessions/{sessionId}/publish'.format({ sessionId: config.sessionId});
+                var uri = '/sessions/{sessionId}/publish'.format({sessionId: config.sessionId});
                 return when(requester.postJson(uri, makeFilesRelative(files)))
                     .then(function (response) {
                         var result = response.data;
@@ -100,7 +103,7 @@ define(function (require) {
                             }
                         }
                         config.debugLogger.log(util.inspect(result));
-                        return {error: result.error, wasSuccessful: result.wasSuccessful };
+                        return {error: result.error, wasSuccessful: result.wasSuccessful};
                     });
             }
 
